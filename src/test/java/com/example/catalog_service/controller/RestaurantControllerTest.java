@@ -2,23 +2,38 @@ package com.example.catalog_service.controller;
 
 import com.example.catalog_service.dto.AddressDto;
 import com.example.catalog_service.dto.RestaurantRequestDto;
+import com.example.catalog_service.service.RestaurantService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class RestaurantControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
 
-    @InjectMocks
-    private RestaurantController restaurantController;
+    @Autowired
+    ObjectMapper objectMapper;
 
-    private RestaurantRequestDto validRestaurantRequestDto;
+    @MockitoBean
+    private RestaurantService restaurantService;
+
+
+    private RestaurantRequestDto restaurantRequestDto;
 
     @BeforeEach
     void setUp() {
@@ -30,16 +45,19 @@ class RestaurantControllerTest {
         addressDto.setLongitude(-89.6500);
         addressDto.setLatitude(39.7817);
 
-        validRestaurantRequestDto = new RestaurantRequestDto();
-        validRestaurantRequestDto.setName("Test Restaurant");
-        validRestaurantRequestDto.setAddress(addressDto);
+        restaurantRequestDto = new RestaurantRequestDto();
+        restaurantRequestDto.setName("Test Restaurant");
+        restaurantRequestDto.setAddress(addressDto);
     }
 
     @Test
-    void testCreateRestaurantSuccess() {
-        ResponseEntity<?> response = restaurantController.create(validRestaurantRequestDto);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("Restaurant created successfully", response.getBody());
+    void testCreateRestaurantSuccess() throws Exception {
+        doNothing().when(restaurantService).create(restaurantRequestDto);
+        mockMvc.perform(MockMvcRequestBuilders.post("/restaurants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(restaurantRequestDto)))
+                .andExpect(status().isCreated())
+                .andExpect(content().string("Restaurant created successfully"));
     }
 
 
