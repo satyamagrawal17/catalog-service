@@ -10,8 +10,7 @@ public class ItemDto {
     @NotBlank(message = "Name cannot be blank")
     @NotNull
     private String name;
-    @NotBlank(message = "Amount cannot be blank")
-    @NotNull
+    @NotNull(message = "Amount cannot be null")
     @Min(value = 0, message = "Amount cannot be negative")
     private double amount;
 }
