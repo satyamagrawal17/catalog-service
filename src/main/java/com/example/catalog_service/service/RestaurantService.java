@@ -22,4 +22,8 @@ public class RestaurantService {
     public List<Restaurant> fetchAll(Long owner_id) {
         return restaurantRepository.findAll();
     }
+
+    public Restaurant fetchById(Long restaurantId, Long ownerId) {
+        return restaurantRepository.findById(restaurantId).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+    }
 }

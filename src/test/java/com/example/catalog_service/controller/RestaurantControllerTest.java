@@ -42,6 +42,7 @@ class RestaurantControllerTest {
     private RestaurantRequestDto restaurantRequestDto;
     private Restaurant restaurant;
     private Long ownerId;
+    private Long restaurantId;
 
     @BeforeEach
     void setUp() {
@@ -70,7 +71,8 @@ class RestaurantControllerTest {
         address.setLatitude(39.7817);
         restaurant.setAddress(address);
 
-        ownerId = 123L;
+        ownerId = 1L;
+        restaurantId = 1L;
 
     }
 
@@ -134,4 +136,16 @@ class RestaurantControllerTest {
         verify(restaurantService, times(1)).fetchAll(1L);
     }
 
+    // Get Restaurant By Id
+
+    @Test
+    void testFetchRestaurantById_Success() throws Exception {
+        when(restaurantService.fetchById(restaurantId, ownerId)).thenReturn(restaurant);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/1/restaurants/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Test Restaurant"));
+
+        verify(restaurantService, times(1)).fetchById(restaurantId, ownerId);
+    }
 }

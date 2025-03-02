@@ -39,4 +39,15 @@ public class RestaurantController {
             return new ResponseEntity<>("Error fetching restaurants", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/{restaurant_id}")
+    public ResponseEntity<?> fetchById(@PathVariable(name = "user_id") Long owner_id, @PathVariable Long restaurant_id) {
+        try {
+            Restaurant restaurantById = restaurantService.fetchById(restaurant_id, owner_id);
+            return new ResponseEntity<>(restaurantById, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("Error fetching restaurant by " + restaurant_id, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
