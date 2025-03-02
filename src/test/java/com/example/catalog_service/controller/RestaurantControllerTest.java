@@ -52,26 +52,26 @@ class RestaurantControllerTest {
 
     @Test
     void testCreateRestaurantSuccess() throws Exception {
-        doNothing().when(restaurantService).create(restaurantRequestDto);
-        mockMvc.perform(MockMvcRequestBuilders.post("/restaurants")
+        doNothing().when(restaurantService).create(restaurantRequestDto, 1L);
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/1/restaurants")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(restaurantRequestDto)))
                 .andExpect(status().isCreated())
                 .andExpect(content().string("Restaurant created successfully"));
-        verify(restaurantService).create(restaurantRequestDto);
+        verify(restaurantService).create(restaurantRequestDto, 1L);
     }
 
     @Test
     void testCreateRestaurant_MissingName_ValidationError() throws Exception {
         restaurantRequestDto.setName(""); // set address, but not name.
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/restaurants")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/1/restaurants")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(restaurantRequestDto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Name cannot be blank"))); // Check for validation error message
 
-        verify(restaurantService, never()).create(any(RestaurantRequestDto.class));
+        verify(restaurantService, never()).create(any(RestaurantRequestDto.class), anyLong());
     }
 
 

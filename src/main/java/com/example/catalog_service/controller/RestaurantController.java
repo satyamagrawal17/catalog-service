@@ -6,21 +6,18 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/restaurants")
+@RequestMapping("/users/{user_id}/restaurants")
 @RequiredArgsConstructor
 public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody RestaurantRequestDto restaurantRequestDto) {
+    public ResponseEntity<?> create(@Valid @RequestBody RestaurantRequestDto restaurantRequestDto, @PathVariable(name = "user_id") Long owner_id) {
         try {
-            restaurantService.create(restaurantRequestDto);
+            restaurantService.create(restaurantRequestDto, owner_id);
             return new ResponseEntity<>("Restaurant created successfully", HttpStatus.CREATED);
         }
         catch (Exception e) {

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
-    public void create(RestaurantRequestDto request) {
-        Restaurant newRestaurant = new Restaurant(request);
+    public void create(RestaurantRequestDto request, Long owner_id) {
+        Restaurant newRestaurant = new Restaurant(request, owner_id);
         restaurantRepository.save(newRestaurant);
     }
 }

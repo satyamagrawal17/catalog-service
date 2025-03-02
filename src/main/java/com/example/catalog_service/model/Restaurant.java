@@ -16,12 +16,15 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
+    private long owner_id;
+    @Column(nullable = false)
     private String name;
 
     @Embedded
     private Address address;
 
-    public Restaurant(RestaurantRequestDto request) {
+    public Restaurant(RestaurantRequestDto request, Long owner_id) {
+        this.owner_id = owner_id;
         this.name = request.getName();
         this.address = new Address();
         this.address.setLongitude(request.getAddress().getLongitude());
