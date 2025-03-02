@@ -1,12 +1,16 @@
 package com.example.catalog_service.controller;
 
 import com.example.catalog_service.dto.RestaurantRequestDto;
+import com.example.catalog_service.model.Restaurant;
 import com.example.catalog_service.service.RestaurantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.reflect.Array;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users/{user_id}/restaurants")
@@ -22,6 +26,17 @@ public class RestaurantController {
         }
         catch (Exception e) {
             return new ResponseEntity<>("Error creating restaurant", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> fetchAll(@PathVariable(name = "user_id") Long owner_id) {
+        try {
+            List<Restaurant> restaurants = restaurantService.fetchAll(owner_id);
+            return new ResponseEntity<>(restaurants, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("Error fetching restaurants", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

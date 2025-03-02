@@ -7,6 +7,8 @@ import com.example.catalog_service.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
@@ -15,5 +17,9 @@ public class RestaurantService {
     public void create(RestaurantRequestDto request, Long owner_id) {
         Restaurant newRestaurant = new Restaurant(request, owner_id);
         restaurantRepository.save(newRestaurant);
+    }
+
+    public List<Restaurant> fetchAll(Long owner_id) {
+        return restaurantRepository.findAll();
     }
 }
