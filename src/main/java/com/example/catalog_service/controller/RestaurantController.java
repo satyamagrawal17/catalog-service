@@ -2,6 +2,7 @@ package com.example.catalog_service.controller;
 
 import com.example.catalog_service.dto.RestaurantRequestDto;
 import com.example.catalog_service.service.RestaurantService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody RestaurantRequestDto restaurantRequestDto) {
+    public ResponseEntity<?> create(@Valid @RequestBody RestaurantRequestDto restaurantRequestDto) {
         try {
             restaurantService.create(restaurantRequestDto);
             return new ResponseEntity<>("Restaurant created successfully", HttpStatus.CREATED);

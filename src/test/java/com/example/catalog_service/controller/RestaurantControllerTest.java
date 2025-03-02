@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,6 +58,20 @@ class RestaurantControllerTest {
                         .content(objectMapper.writeValueAsString(restaurantRequestDto)))
                 .andExpect(status().isCreated())
                 .andExpect(content().string("Restaurant created successfully"));
+        verify(restaurantService).create(restaurantRequestDto);
+    }
+
+    @Test
+    void testCreateRestaurant_MissingName_ValidationError() throws Exception {
+        restaurantRequestDto.setName(""); // set address, but not name.
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/restaurants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(restaurantRequestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Name cannot be blank"))); // Check for validation error message
+
+        verify(restaurantService, never()).create(any(RestaurantRequestDto.class));
     }
 
 

@@ -16,7 +16,6 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
-    @NotBlank(message = "Restaurant name is mandatory")
     private String name;
 
     @Embedded
