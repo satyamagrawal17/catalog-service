@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Restaurant {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;
@@ -23,6 +23,7 @@ public class Restaurant {
 
     public Restaurant(RestaurantRequestDto request) {
         this.name = request.getName();
+        this.address = new Address();
         this.address.setLongitude(request.getAddress().getLongitude());
         this.address.setLatitude(request.getAddress().getLatitude());
         this.address.setState(request.getAddress().getState());
