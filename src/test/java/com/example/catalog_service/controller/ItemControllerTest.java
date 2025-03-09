@@ -38,7 +38,7 @@ class ItemControllerTest {
     void setUp() {
         itemDto = new ItemDto();
         itemDto.setName("Test Item");
-        itemDto.setAmount(10.0);
+        itemDto.setPrice(10.0);
 
         ownerId = 1L;
         restaurantId = 1L;

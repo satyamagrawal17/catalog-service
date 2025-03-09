@@ -22,7 +22,8 @@ public class ItemController {
 
         }
         catch (Exception e) {
-            return new ResponseEntity<>("Error creating restaurant", HttpStatus.BAD_REQUEST);
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Error creating item", HttpStatus.BAD_REQUEST);
 
         }
     }

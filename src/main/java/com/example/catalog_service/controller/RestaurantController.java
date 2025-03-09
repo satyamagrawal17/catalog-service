@@ -47,6 +47,7 @@ public class RestaurantController {
             return new ResponseEntity<>(restaurantById, HttpStatus.OK);
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity<>("Error fetching restaurant by " + restaurant_id, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

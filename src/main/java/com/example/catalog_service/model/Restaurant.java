@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -22,6 +24,9 @@ public class Restaurant {
 
     @Embedded
     private Address address;
+
+//    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Item> items;
 
     public Restaurant(RestaurantRequestDto request, Long owner_id) {
         this.owner_id = owner_id;

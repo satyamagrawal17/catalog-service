@@ -12,5 +12,5 @@ public class ItemDto {
     private String name;
     @NotNull(message = "Amount cannot be null")
     @Min(value = 0, message = "Amount cannot be negative")
-    private double amount;
+    private double price;
 }
