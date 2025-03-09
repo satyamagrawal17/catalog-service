@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,4 +25,11 @@ public class ItemService {
         itemRepository.save(newItem);
     }
 
+    public List<ItemDto> getAllItems(Long restaurantId, Long ownerId) {
+        List<Item> itemList = itemRepository.findAllByRestaurant_Id(restaurantId);
+        return itemList.stream()
+                .map(item -> new ItemDto(item.getName(), item.getPrice()))
+                .collect(Collectors.toList());
+
+    }
 }

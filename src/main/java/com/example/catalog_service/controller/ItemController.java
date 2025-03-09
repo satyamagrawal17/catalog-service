@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users/{user_id}/restaurants/{restaurant_id}/items")
 @RequiredArgsConstructor
@@ -25,6 +27,18 @@ public class ItemController {
             System.out.println(e.getMessage());
             return new ResponseEntity<>("Error creating item", HttpStatus.BAD_REQUEST);
 
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> findAllByRestaurantId(@PathVariable(name = "user_id") Long owner_id, @PathVariable Long restaurant_id) {
+        try {
+            List<ItemDto> itemList = itemService.getAllItems(owner_id, restaurant_id);
+            return new ResponseEntity<>(itemList, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Error getting items", HttpStatus.BAD_REQUEST);
         }
     }
 }

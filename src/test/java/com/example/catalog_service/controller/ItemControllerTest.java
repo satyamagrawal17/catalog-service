@@ -14,6 +14,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -69,4 +72,37 @@ class ItemControllerTest {
 
         verify(itemService, never()).create(any(ItemDto.class), anyLong(), anyLong());
     }
+
+    @Test
+    void testGetAllItemsByRestaurantId_Success() throws Exception {
+        List<ItemDto> itemList = Arrays.asList(
+                new ItemDto("Item 1", 10.0),
+                new ItemDto("Item 2", 20.0)
+        );
+
+        when(itemService.getAllItems(restaurantId, ownerId)).thenReturn(itemList);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/1/restaurants/1/items")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Item 1"))
+                .andExpect(jsonPath("$[0].price").value(10.0))
+                .andExpect(jsonPath("$[1].name").value("Item 2"))
+                .andExpect(jsonPath("$[1].price").value(20.0));
+
+        verify(itemService, times(1)).getAllItems(restaurantId, ownerId);
+    }
+
+    @Test
+    void testGetAllItemsByRestaurantId_Error() throws Exception {
+        when(itemService.getAllItems(restaurantId, ownerId)).thenThrow(new RuntimeException("Error getting items"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/1/restaurants/1/items")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Error getting items"));
+
+        verify(itemService, times(1)).getAllItems(restaurantId, ownerId);
+    }
+
 }
