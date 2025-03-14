@@ -1,8 +1,7 @@
 package com.example.catalog_service.model;
 
-import com.example.catalog_service.dto.ItemDto;
+import com.example.catalog_service.dto.ItemRequestDto;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,14 +18,17 @@ public class Item {
     private String name;
     @Column(nullable = false)
     private double price;
+    @Column(nullable = false)
+    private int stock;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    public Item(ItemDto itemDto, Restaurant restaurant) {
-        this.name = itemDto.getName();
-        this.price = itemDto.getPrice();
+    public Item(ItemRequestDto itemRequestDto, Restaurant restaurant) {
+        this.name = itemRequestDto.getName();
+        this.price = itemRequestDto.getPrice();
+        this.stock = itemRequestDto.getStock();
         this.restaurant = restaurant;
     }
 }

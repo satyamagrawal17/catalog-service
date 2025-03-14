@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,8 +26,8 @@ public class Restaurant {
     @Embedded
     private Address address;
 
-//    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Item> items;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> items;
 
     public Restaurant(RestaurantRequestDto request, Long owner_id) {
         this.owner_id = owner_id;
@@ -38,5 +39,6 @@ public class Restaurant {
         this.address.setCity(request.getAddress().getCity());
         this.address.setStreet(request.getAddress().getStreet());
         this.address.setPostalCode(request.getAddress().getPostalCode());
+        this.items = new ArrayList<>();
     }
 }

@@ -10,11 +10,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDto {
+public class ItemRequestDto {
     @NotBlank(message = "Name cannot be blank")
     @NotNull
     private String name;
     @NotNull(message = "Amount cannot be null")
     @Min(value = 0, message = "Amount cannot be negative")
     private double price;
+    @NotNull(message = "Amount cannot be null")
+    @Min(value = 0, message = "Amount cannot be negative")
+    private int stock;
 }

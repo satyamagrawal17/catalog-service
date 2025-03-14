@@ -1,6 +1,6 @@
 package com.example.catalog_service.service;
 
-import com.example.catalog_service.dto.ItemDto;
+import com.example.catalog_service.dto.ItemRequestDto;
 import com.example.catalog_service.model.Item;
 import com.example.catalog_service.model.Restaurant;
 import com.example.catalog_service.repository.ItemRepository;
@@ -30,7 +30,7 @@ class ItemServiceTest {
     private RestaurantRepository restaurantRepository;
     private ItemRepository itemRepository;
 
-    private ItemDto itemDto;
+    private ItemRequestDto itemRequestDto;
     private Long restaurantId;
     private Long ownerId;
 
@@ -41,9 +41,10 @@ class ItemServiceTest {
 
         itemService = new ItemService(restaurantRepository, itemRepository);
 
-        itemDto = new ItemDto();
-        itemDto.setName("Test Item");
-        itemDto.setPrice(10.0);
+        itemRequestDto = new ItemRequestDto();
+        itemRequestDto.setName("Test Item");
+        itemRequestDto.setPrice(10.0);
+        itemRequestDto.setStock(100);
 
         restaurantId = 1L;
         ownerId = 1L;
@@ -54,7 +55,7 @@ class ItemServiceTest {
         Restaurant restaurant = new Restaurant();
         when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(restaurant));
 
-        itemService.create(itemDto, restaurantId, ownerId);
+        itemService.create(itemRequestDto, restaurantId, ownerId);
 
         verify(restaurantRepository, times(1)).findById(restaurantId);
         verify(itemRepository, times(1)).save(any(Item.class));
@@ -64,7 +65,7 @@ class ItemServiceTest {
     void testCreateItem_RestaurantNotFound() {
         when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> itemService.create(itemDto, restaurantId, ownerId));
+        assertThrows(RuntimeException.class, () -> itemService.create(itemRequestDto, restaurantId, ownerId));
 
         verify(restaurantRepository, times(1)).findById(restaurantId);
         verify(itemRepository, never()).save(any(Item.class));
@@ -74,7 +75,7 @@ class ItemServiceTest {
     void testCreateItem_RepositoryThrowsException() {
         when(restaurantRepository.findById(restaurantId)).thenThrow(new RuntimeException("Simulated repository error"));
 
-        assertThrows(RuntimeException.class, () -> itemService.create(itemDto, restaurantId, ownerId));
+        assertThrows(RuntimeException.class, () -> itemService.create(itemRequestDto, restaurantId, ownerId));
 
         verify(restaurantRepository, times(1)).findById(restaurantId);
         verify(itemRepository, never()).save(any(Item.class));
@@ -83,23 +84,18 @@ class ItemServiceTest {
     @Test
     void testGetAllItemsByRestaurantId_Success() {
         Restaurant restaurant = new Restaurant();
-        List<ItemDto> itemDtoList = Arrays.asList(
-                new ItemDto("Item 1", 10.0),
-                new ItemDto("Item 2", 20.0)
-        );
-        Item item1 = new Item(itemDtoList.getFirst(), restaurant);
-        Item item2 = new Item(itemDtoList.get(1), restaurant);
+        Item item1 = new Item(itemRequestDto, restaurant);
+        Item item2 = new Item(itemRequestDto, restaurant);
         List<Item> itemList = Arrays.asList(item1, item2);
 
         when(itemRepository.findAllByRestaurant_Id(restaurantId)).thenReturn(itemList);
 
-        List<ItemDto> result = itemService.getAllItems(restaurantId, ownerId);
+        List<Item> result = itemService.getAllItems(restaurantId, ownerId);
 
         assertEquals(2, result.size());
-        assertEquals("Item 1", result.get(0).getName());
+        assertEquals("Test Item", result.get(0).getName());
         assertEquals(10.0, result.get(0).getPrice());
-        assertEquals("Item 2", result.get(1).getName());
-        assertEquals(20.0, result.get(1).getPrice());
+        assertEquals(100, result.get(0).getStock());
 
         verify(itemRepository, times(1)).findAllByRestaurant_Id(restaurantId);
     }
@@ -108,7 +104,7 @@ class ItemServiceTest {
     void testGetAllItemsByRestaurantId_EmptyList() {
         when(itemRepository.findAllByRestaurant_Id(restaurantId)).thenReturn(Collections.emptyList());
 
-        List<ItemDto> result = itemService.getAllItems(restaurantId, ownerId);
+        List<Item> result = itemService.getAllItems(restaurantId, ownerId);
 
         assertTrue(result.isEmpty());
 
