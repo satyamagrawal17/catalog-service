@@ -20,7 +20,8 @@ public class GrpcItemService extends ItemServiceGrpc.ItemServiceImplBase {
             itemRequestDto.setPrice(request.getPrice());
             itemRequestDto.setStock(request.getStock());
             Long ownerId = 1L;
-            Item item = itemService.create(itemRequestDto, request.getRestaurantId(), ownerId);
+            Long restaurantId = Long.valueOf(request.getRestaurantId());
+            Item item = itemService.create(itemRequestDto, restaurantId, ownerId);
             MenuItem response = convertToGrpcItem(item);
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -64,6 +65,7 @@ public class GrpcItemService extends ItemServiceGrpc.ItemServiceImplBase {
         menuItemBuilder.setName(item.getName());
         menuItemBuilder.setPrice(item.getPrice());
         menuItemBuilder.setStock(item.getStock());
+        menuItemBuilder.setRestaurantId(item.getRestaurant().getId());
         return menuItemBuilder.build();
     }
 }

@@ -7,6 +7,7 @@ import com.example.catalog_service.repository.ItemRepository;
 import com.example.catalog_service.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ItemService {
 
     private final RestaurantRepository restaurantRepository;
     private final ItemRepository itemRepository;
-
+    @Transactional
     public Item create(ItemRequestDto itemRequestDto, Long restaurantId, Long ownerId) {
         Restaurant savedRestaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new RuntimeException("restaurant id is not valid"));
         Item newItem = new Item(itemRequestDto, savedRestaurant);
